@@ -115,7 +115,7 @@ int div(int a, int b) {
 }
 
 int eval(string const& expr) {
-    unsigned msg_id = debug_ctx("while evaluating ', expr, "'");
+    unsigned msg_id = debug_ctx("while evaluating '", expr, "'");
     istringstream in{expr};
     int a; char op; int b;
     in >> a >> op >> b;
