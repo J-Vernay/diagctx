@@ -70,17 +70,17 @@ extern "C" {
 
 /* Initialize diagctx, must be called before any other function.
  * diagctx will use a buffer of 'message_size * capacity' bytes.
- * If 'buffer == NULL', the buffer will be allocated with malloc().
  * 'msg_destructor' is called when 'msg' is not used anymore. 'msg' will never be NULL.
- *  'msg_destructor' an be NULL if nothing needs to be done. 
- * Example with dynamic allocation allowed:
- *     diagctx_init(sizeof(struct MyMessage), 20, NULL, NULL);
- * Exampe without dynamic allocation in C:
+ *  'msg_destructor' can be NULL if nothing needs to be done.
+ * Example with dynamic allocation in C:
+ *     diagctx_init(sizeof(struct MyMessage),
+ *                  malloc(sizeof(struct MyMessage) * 20, 20, NULL);
+ * Example without dynamic allocation in C:
  *     struct MyMessage messages[20];
- *     diagctx_init(sizeof(struct MyMessage), 20, messages, NULL);
+ *     diagctx_init(sizeof(struct MyMessage), messages, 20, NULL);
  * Example without dynamic allocation in C++:
  *     std::aligned_storage<MyMessage[20]> messages;
- *     diagctx_init(sizeof(MyMessage), 20, &messages,
+ *     diagctx_init(sizeof(MyMessage), &messages, 20,
  *         [](void* msg) { static_cast<MyMessage*>(msg)->~MyMessage(); }
  *     );
  */
@@ -98,7 +98,7 @@ void diagctx_init(unsigned message_size,
  *      if (diagmsg != NULL) *diagmsg = (struct MyMessage){ ... };
  *      ... operations ...
  *      diagctx_pop(diagmsg_id);
- */ 
+ */
 void* diagctx_push(unsigned* msg_id);
 
 /* Pop 'diagmsg'. Must be called when the context is obsolete.
